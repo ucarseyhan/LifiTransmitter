@@ -1,7 +1,13 @@
 package model;
-
 import java.io.Serializable;
-
+/**
+ * Packet is used for representing the super class
+ * of Packet. It contains the necessary attributed 
+ * for performance evaluation
+ * 
+ * @author seyhan
+ *
+ */
 public class Packet implements Serializable,Transmittable 
 {
 
@@ -13,10 +19,21 @@ public class Packet implements Serializable,Transmittable
 	private int sequenceNumber;
 	private int packetType;
 	
+	/**
+	 * Default Constructor
+	 */
 	public Packet() 
 	{
 	}
-
+	
+	/**
+	 * Specialized Constructor
+	 * 
+	 * @param transmitTime
+	 * @param receiveTime
+	 * @param sequenceNumber
+	 * @param packetType
+	 */
 	public Packet(long transmitTime, long receiveTime, int sequenceNumber, int packetType) 
 	{
 		super();

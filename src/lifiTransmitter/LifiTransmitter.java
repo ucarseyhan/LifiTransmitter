@@ -1,6 +1,8 @@
 package lifiTransmitter;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,26 +11,43 @@ import model.Constant;
 import model.ExitPacket;
 import model.HelloPacket;
 import model.Packet;
-
+/**
+ * LifiTransmitter is the class that represents the 
+ * pure Lifi Li-1st device. It has start method which 
+ * starts the communication process.
+ * 
+ * @author seyhan
+ *
+ */
 public class LifiTransmitter
 {
-
+	/**
+	 * Default Constructor
+	 */
 	public LifiTransmitter()
 	{
 
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * 
+	 */
 	public void start() 
 	{
 		DatagramSocket Socket;
-		for (int i = 0; i < 1000; i++) 
+		/**
+		 * Change dimming level before packet transmission
+		 */
+		changeDimming();
+		////////////////////////////////////////////////////
+		for (int i = 0; i < Constant.NUMBER_OF_PACKET; i++) 
 		{
 			try 
 			{
 				Socket = new DatagramSocket();
 				InetAddress IPAddress = InetAddress.getByName(Constant.RECEIVER_IP);
 				Packet packet = null;
-				if(i == 1000) packet = new ExitPacket();
+				if(i == Constant.NUMBER_OF_PACKET) packet = new ExitPacket();
 				else packet =  new HelloPacket(System.currentTimeMillis(), 0, i, Constant.HELLO_PACKET);
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(outputStream);
@@ -37,16 +56,53 @@ public class LifiTransmitter
 				DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, 5004);
 				Socket.send(sendPacket);
 				System.out.println("Message sent from client");
-
-				Thread.sleep(Constant.PERIOD);
+				Thread.sleep(1000);
 			} 
 			catch (Exception e) 
 			{
 				e.printStackTrace();
 			}
 		}
-
-
 	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * changeDimming is used for connecting the Ceiling Unit and change
+	 * the dim level to static value.
+	 */
+	public  void changeDimming() 
+	{
+		try 
+		{
+			/**
+			 * Important point to mention
+			 */
+			/**Absolute path is needed.*/ //For error: 2 no file found exception.
+			/**If any chmod u+x lifictl*/ //For error: 13 permission denied.
+			/**lifictl -l5 192.168.0.1 : set dimming level to 5 on 192.168.0.1*/
+			String dimLevel = "-l5";
+			String[] command = new String[]{"/home/seyhan/workspaceEE/Transmitter/lifictl",dimLevel, Constant.LOCAL_IP};
+			Runtime rt = Runtime.getRuntime();
+			Process process = rt.exec(command);
+			BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			try 
+			{
+				while ((line = br.readLine()) != null) 
+				{
+					System.out.println(line);
+				}
+			} catch (Exception ex) 
+			{
+				ex.printStackTrace();
+			}
+			br.close();
+			System.out.println("Program terminated!");
+			
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
