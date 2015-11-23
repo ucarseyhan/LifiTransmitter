@@ -55,7 +55,7 @@ public class LifiTransmitter
 				byte[] data = outputStream.toByteArray();
 				DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, 5004);
 				Socket.send(sendPacket);
-				System.out.println("Message sent from client");
+				System.out.println("Message Number:"+i+" sent to client");
 				Thread.sleep(1000);
 			} 
 			catch (Exception e) 
@@ -79,7 +79,7 @@ public class LifiTransmitter
 			/**Absolute path is needed.*/ //For error: 2 no file found exception.
 			/**If any chmod u+x lifictl*/ //For error: 13 permission denied.
 			/**lifictl -l5 192.168.0.1 : set dimming level to 5 on 192.168.0.1*/
-			String dimLevel = "-l5";
+			String dimLevel = "-l1";
 			String[] command = new String[]{"/home/seyhan/workspaceEE/Transmitter/lifictl",dimLevel, Constant.LOCAL_IP};
 			Runtime rt = Runtime.getRuntime();
 			Process process = rt.exec(command);
@@ -96,7 +96,7 @@ public class LifiTransmitter
 				ex.printStackTrace();
 			}
 			br.close();
-			System.out.println("Program terminated!");
+			System.out.println("Li-1st Device dimming level is set to: "+dimLevel);
 			
 		} catch (Exception e) 
 		{
