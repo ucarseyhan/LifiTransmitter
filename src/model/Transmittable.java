@@ -1,4 +1,5 @@
 package model;
+
 /*********************************
  * Transmittable is interface where
  * all transmittable packet.

@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import model.Constant;
 import model.ExitPacket;
 import model.HelloPacket;
+import model.NTPDate;
 import model.Packet;
 /**
  * LifiTransmitter is the class that represents the 
@@ -47,8 +48,16 @@ public class LifiTransmitter
 				Socket = new DatagramSocket();
 				InetAddress IPAddress = InetAddress.getByName(Constant.RECEIVER_IP);
 				Packet packet = null;
+				/////////////////////////////////////////////////////////////////////////////////////////
+				//Get center PC date
+				//Disable on CENTER PC !!! IMPORTANT
+				long centerPCDate = new NTPDate().getNTPDate();
+				//long centerPCDate = System.currentTimeMillis();
+				//////////////////////////////////////////////////////////////
 				if(i == Constant.NUMBER_OF_PACKET) packet = new ExitPacket();
-				else packet =  new HelloPacket(System.currentTimeMillis(), 0, i, Constant.HELLO_PACKET);
+				//Set transmit time
+				else packet =  new HelloPacket(centerPCDate, 0, i, Constant.HELLO_PACKET);
+				////////////////////////////////////////////////////////////////////////////////////////////
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(outputStream);
 				os.writeObject(packet);
